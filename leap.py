@@ -6,6 +6,7 @@ import unittest
 import csv
 import pandas as pd
 from datetime import date
+from dateutil.relativedelta import relativedelta
 
 #Definte some settings here
 #TODO: Shift to a config.ini in future
@@ -18,8 +19,7 @@ def DaysBetweenDates(startdate, enddate):
 
 #Method to calculate complete years betwen 2 dates
 def YearsBetweenDates(startdate, enddate):
-    return enddate.year - startdate.year
-
+    return relativedelta(enddate, startdate).years
 
 #Method to calculate exposure by lives
 #Basically, number of days between to dates, divided by days in a year
@@ -83,13 +83,13 @@ def CreatePeriods(startdate, enddate, birthdate):
     return result
 
 #Calculate the exposures
-def CalculateExposure(records):
+def CalculateExposure(record):
     #initialise dates
-    policystartdate=GetDate(records['PolicyStart'])
-    if records['PolicyEnd'] == "nan":
+    policystartdate=GetDate(record['PolicyStart'])
+    if record['PolicyEnd'] == "nan":
         policyenddate=studyenddate
-    policyenddate=GetDate(records['PolicyEnd'])
-    birthdate=GetDate(records['DateOfBirth'])
+    policyenddate=GetDate(record['PolicyEnd'])
+    birthdate=GetDate(record['DateOfBirth'])
 
     #calculate the various dates that change age/calendar year/duration in a list
     periods = CreatePeriods(policystartdate, policyenddate, birthdate)
@@ -102,9 +102,14 @@ def CalculateExposure(records):
             lastdate = dt
             continue;    
         
-    #for each period, store the exposure by lives and amounts with 
-    #age(last birthday), calendar year and duration
-
+        #for each period, store the exposure by lives and amounts with 
+        #age(last birthday), calendar year and duration
+        age= YearsBetweenDates(birthdate, dt)
+        calendaryear=lastdate.year
+        duration=YearsBetweenDates(policystartdate, dt)
+        exposurelives=ExposureByLives(lastdate, dt)
+        exposureamts = exposurelives * record['SumAssured']
+        result.append([age,calendaryear,duration, exposurelives, exposureamts])
 
     #return result
     return result
@@ -184,6 +189,9 @@ class CalculationTest(unittest.TestCase):
         result = CalculateExposure(record)
 
         #test results
+        firstresult=result[0]
+        expectedfirstresult = [42,2012,0,(214/365.0), ((214/365.0)*100000)]
+        self.assertEqual(firstresult, expectedfirstresult)
 
 
 
