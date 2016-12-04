@@ -109,7 +109,20 @@ def CalculateExposure(record):
         duration=YearsBetweenDates(policystartdate, dt)
         exposurelives=ExposureByLives(lastdate, dt)
         exposureamts = exposurelives * record['SumAssured']
-        result.append([age,calendaryear,duration, exposurelives, exposureamts])
+        claimlives = 0.0
+        claimamts = 0.0
+        lapselives = 0.0
+        lapseamts = 0.0
+        if(dt == policyenddate):
+            if (record['Decrement']==1): # death
+                claimlives=1.0
+                claimamts=record['SumAssured']
+            elif (record['Decrement']==-1): #lapse
+                lapselives=1.0
+                lapseamts= record['SumAssured']
+            
+        result.append([age, calendaryear, duration, exposurelives, exposureamts, 
+            claimlives, claimamts, lapselives, lapseamts])
 
     #return result
     return result
@@ -190,10 +203,29 @@ class CalculationTest(unittest.TestCase):
 
         #test results
         firstresult=result[0]
-        expectedfirstresult = [42,2012,0,(214/365.0), ((214/365.0)*100000)]
+        expectedfirstresult = [42,2012,0,(214/365.0), ((214/365.0)*100000), 0.0, 0.0, 0.0, 0.0]
         self.assertEqual(firstresult, expectedfirstresult)
-
+        lastresult=result[-1]
+        expectedfirstresult = [45,2016,3,(32/365.0), ((32/365.0)*100000), 1.0, 100000, 0.0, 0.0]
 
 
 if __name__ == '__main__':
-    unittest.main()
+    #unittest.main()
+
+    #create the actual, output to stdout
+    records = CreateDataFrame('test.csv')
+    
+    #output header
+    header = ['PolicyNumber', 'Gender', 'Smoker', 'SumAssured', 'Age', 'Year', 'Duration', 'ExposureLives',
+        'ExposureAmts', 'ClaimLives', 'ClaimAmts', 'LapseLive', 'LapseAmts']
+    print(",".join(header))
+    
+    #output records
+    for record in records:
+        results = CalculateExposure(record)
+        for resultline in results:
+            combineresult = [ record['PolicyNumber'], record['Gender'], record['Smoker'], record['SumAssured']] + resultline
+            formattedoutput = ','.join(map(str,combineresult))
+            print(formattedoutput)
+        
+
