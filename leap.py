@@ -50,29 +50,34 @@ def CreatePeriods(startdate, enddate, birthdate):
                 result.append(newyear)
             else:
                 result.append(enddate)
+                return result
             if(enddate>currentyearbirthday): 
                 result.append(currentyearbirthday)
             else:
                 result.append(enddate)
+                return result
             if(enddate>policyanniversary):
                 result.append(policyanniversary)
             else:
                 result.append(enddate)
+                return result
         else:
             if(enddate>currentyearbirthday): 
                 result.append(currentyearbirthday)
             else:
                 result.append(enddate)
+                return result
             if(enddate>newyear):
                 result.append(newyear)
             else:
                 result.append(enddate)
+                return result
             if(enddate>policyanniversary):
                 result.append(policyanniversary)
+                return result
             else:
                 result.append(enddate)
-        if(result[-1]==enddate):
-            return result
+    
         nextdate=policyanniversary
     
     return result
@@ -142,6 +147,15 @@ class DateTest(unittest.TestCase):
         #test GetDate
         testdate='02/01/2014'
         self.assertEqual(GetDate(testdate), date(2014,1,2))
+
+        #test CreatePeriods
+        periods = CreatePeriods(date(2012,6,1), date(2016,2,1), date(1970,3,1))
+        expectedperiods = [date(2012,6,1), 
+            date(2013,1,1), date(2013,3,1), date(2013,6,1),
+            date(2014,1,1), date(2014,3,1), date(2014,6,1),
+            date(2015,1,1), date(2015,3,1), date(2015,6,1),
+            date(2016,1,1), date(2016,2,1)]
+        self.assertEqual(periods, expectedperiods)
 
 
 class CSVTest(unittest.TestCase):
