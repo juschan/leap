@@ -1,3 +1,7 @@
+# Note: This software is for educational purposes only. 
+#       Use at your own risk.
+#       The author does not take any liability or responsibility with the use of the code.
+
 import unittest
 from datetime import date
 
