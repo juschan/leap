@@ -7,6 +7,10 @@ import csv
 import pandas as pd
 from datetime import date
 
+#Definte some settings here
+#TODO: Shift to a config.ini in future
+studyenddate=date(2016, 12, 31)
+
 
 #Method to calculate number of days between 2 dates
 def DaysBetweenDates(startdate, enddate):
@@ -17,6 +21,21 @@ def DaysBetweenDates(startdate, enddate):
 #TODO: Adjust for leap year
 def ExposureByLives(startdate, enddate):
     return DaysBetweenDates(startdate, enddate)/365.0
+
+def GetDate(datestring):
+    dt = list(map(int, "03/12/2016".split('/')))
+    return date(dt[2], dt[1], dt[0])
+
+#Calculate the exposures
+def CalculateExposure(records):
+    #initialise dates
+    policystartdate=GetDate(records['PolicyStart'])
+    if records['PolicyEnd'] == "nan":
+        policyenddate=studyenddate
+    policyenddate=GetDate(records['PolicyEnd'])
+    birthdate=GetDate(records['DateOfBirth'])
+
+
 
 #Read record from filename provided. CSV format.
 def ReadRecord(filename):
@@ -64,9 +83,20 @@ class DataFrameTest(unittest.TestCase):
     def test(self):
         records = CreateDataFrame('test.csv')
         for record in records:
-            print(record)
+            #print(record)
+            self.assertEqual(record['Gender'],'M')
 
+class CalculationTest(unittest.TestCase):
+    def test(self):
+        #create record
+        record = {'PolicyStart': '01/06/2012', 'Smoker': 'Y', 
+        'DateOfBirth': '01/01/1970', 'Gender': 'M', 'PolicyNumber': 'AA001', 
+        'SumAssured': 100000, 'PolicyEnd': '01/02/2016', 'Decrement': 1}
+        
+        #do calcs
+        result = CalculateExposure(record)
 
+        #test results
 
 
 
