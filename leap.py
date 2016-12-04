@@ -16,6 +16,11 @@ studyenddate=date(2016, 12, 31)
 def DaysBetweenDates(startdate, enddate):
     return (enddate-startdate).days
 
+#Method to calculate complete years betwen 2 dates
+def YearsBetweenDates(startdate, enddate):
+    return enddate.year - startdate.year
+
+
 #Method to calculate exposure by lives
 #Basically, number of days between to dates, divided by days in a year
 #TODO: Adjust for leap year
@@ -23,8 +28,54 @@ def ExposureByLives(startdate, enddate):
     return DaysBetweenDates(startdate, enddate)/365.0
 
 def GetDate(datestring):
-    dt = list(map(int, "03/12/2016".split('/')))
+    dt = list(map(int, datestring.split('/')))
     return date(dt[2], dt[1], dt[0])
+    
+#calculate the dates leading to change in age, calendar year and duration
+def CreatePeriods(startdate, enddate, birthdate):
+    nextdate=startdate
+    result = [startdate]
+    while nextdate != enddate:
+        policyanniversary = date(nextdate.year+1, startdate.month, startdate.day)
+        #print(policyanniversary)
+        newyear=date(nextdate.year+1, 1, 1)
+
+        currentyearbirthday = date(nextdate.year, birthdate.month, birthdate.day)
+        
+        #TODO: Make refactor in future
+        if(currentyearbirthday < policyanniversary):
+            currentyearbirthday = date(nextdate.year+1, birthdate.month, birthdate.day)
+            
+            if(enddate>newyear):
+                result.append(newyear)
+            else:
+                result.append(enddate)
+            if(enddate>currentyearbirthday): 
+                result.append(currentyearbirthday)
+            else:
+                result.append(enddate)
+            if(enddate>policyanniversary):
+                result.append(policyanniversary)
+            else:
+                result.append(enddate)
+        else:
+            if(enddate>currentyearbirthday): 
+                result.append(currentyearbirthday)
+            else:
+                result.append(enddate)
+            if(enddate>newyear):
+                result.append(newyear)
+            else:
+                result.append(enddate)
+            if(enddate>policyanniversary):
+                result.append(policyanniversary)
+            else:
+                result.append(enddate)
+        if(result[-1]==enddate):
+            return result
+        nextdate=policyanniversary
+    
+    return result
 
 #Calculate the exposures
 def CalculateExposure(records):
@@ -35,7 +86,23 @@ def CalculateExposure(records):
     policyenddate=GetDate(records['PolicyEnd'])
     birthdate=GetDate(records['DateOfBirth'])
 
+    #calculate the various dates that change age/calendar year/duration in a list
+    periods = CreatePeriods(policystartdate, policyenddate, birthdate)
 
+    result=[]
+    lastdate=None
+    #iterate through all periods
+    for dt in periods:
+        if (lastdate==None):
+            lastdate = dt
+            continue;    
+        
+    #for each period, store the exposure by lives and amounts with 
+    #age(last birthday), calendar year and duration
+
+
+    #return result
+    return result
 
 #Read record from filename provided. CSV format.
 def ReadRecord(filename):
@@ -70,6 +137,12 @@ class DateTest(unittest.TestCase):
         startdate = date(2008,8,1)
         enddate = date(2009,12,1)
         self.assertEqual(DaysBetweenDates(startdate, enddate), 487)
+        self.assertEqual(YearsBetweenDates(startdate,enddate),1)
+
+        #test GetDate
+        testdate='02/01/2014'
+        self.assertEqual(GetDate(testdate), date(2014,1,2))
+
 
 class CSVTest(unittest.TestCase):
     #test csv file reading
@@ -90,7 +163,7 @@ class CalculationTest(unittest.TestCase):
     def test(self):
         #create record
         record = {'PolicyStart': '01/06/2012', 'Smoker': 'Y', 
-        'DateOfBirth': '01/01/1970', 'Gender': 'M', 'PolicyNumber': 'AA001', 
+        'DateOfBirth': '01/03/1970', 'Gender': 'M', 'PolicyNumber': 'AA001', 
         'SumAssured': 100000, 'PolicyEnd': '01/02/2016', 'Decrement': 1}
         
         #do calcs
