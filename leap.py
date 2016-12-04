@@ -4,6 +4,7 @@
 
 import unittest
 import csv
+import pandas as pd
 from datetime import date
 
 
@@ -30,7 +31,13 @@ def ReadRecord(filename):
         f.close() 
     return result
 
-
+#Create DataFrame using pandas
+def CreateDataFrame(filename):
+    df=pd.DataFrame.from_csv('test.csv', index_col=None)
+    for row in df.itertuples():
+        record=dict(zip(df.columns.values, row[1:]))
+        yield record
+    
 #unit tests
 class DateTest(unittest.TestCase):
     def test(self):
@@ -50,7 +57,17 @@ class CSVTest(unittest.TestCase):
     def test(self):
         expectedresult = ReadRecord('test.csv')
         self.assertEqual(expectedresult[0][0],"PolicyNumber")
-        self.assertEqual(expectedresult[1][0],"A001")
+        self.assertEqual(expectedresult[1][0],"AA001")
+
+class DataFrameTest(unittest.TestCase):
+    #test csv file reading
+    def test(self):
+        records = CreateDataFrame('test.csv')
+        for record in records:
+            print(record)
+
+
+
 
 
 if __name__ == '__main__':
