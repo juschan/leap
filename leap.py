@@ -123,6 +123,7 @@ def CalculateExposure(record):
             
         result.append([age, calendaryear, duration, exposurelives, exposureamts, 
             claimlives, claimamts, lapselives, lapseamts])
+        lastdate=dt
 
     #return result
     return result
