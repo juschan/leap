@@ -8,7 +8,7 @@ import pandas as pd
 from datetime import date
 from dateutil.relativedelta import relativedelta
 
-#Definte some settings here
+#Define settings here
 #TODO: Shift to a config.ini in future
 studyenddate=date(2016, 12, 31)
 
@@ -35,52 +35,31 @@ def GetDate(datestring):
 def CreatePeriods(startdate, enddate, birthdate):
     nextdate=startdate
     result = [startdate]
-    while nextdate != enddate:
+    while nextdate < enddate:
         policyanniversary = date(nextdate.year+1, startdate.month, startdate.day)
-        #print(policyanniversary)
         newyear=date(nextdate.year+1, 1, 1)
-
         currentyearbirthday = date(nextdate.year, birthdate.month, birthdate.day)
         
-        #TODO: Make refactor in future
-        if(currentyearbirthday < policyanniversary):
-            currentyearbirthday = date(nextdate.year+1, birthdate.month, birthdate.day)
-            
-            if(enddate>newyear):
-                result.append(newyear)
-            else:
-                result.append(enddate)
-                return result
-            if(enddate>currentyearbirthday): 
-                result.append(currentyearbirthday)
-            else:
-                result.append(enddate)
-                return result
-            if(enddate>policyanniversary):
-                result.append(policyanniversary)
-            else:
-                result.append(enddate)
-                return result
+        if(nextdate < currentyearbirthday < newyear ):
+            result.append(currentyearbirthday)
+            result.append(newyear)
         else:
-            if(enddate>currentyearbirthday): 
-                result.append(currentyearbirthday)
-            else:
-                result.append(enddate)
-                return result
-            if(enddate>newyear):
-                result.append(newyear)
-            else:
-                result.append(enddate)
-                return result
-            if(enddate>policyanniversary):
-                result.append(policyanniversary)
-                return result
-            else:
-                result.append(enddate)
-    
+            result.append(newyear)
+            nextyearbirthday = date(nextdate.year+1, birthdate.month, birthdate.day)
+            result.append(nextyearbirthday)
+
+        result.append(policyanniversary)
         nextdate=policyanniversary
-    
-    return result
+
+    #now nextdate exceeds enddate
+    #trim result so it ends with enddate
+    for i, dt in enumerate(result): 
+        if(result[i] > enddate):
+            finalresult = result[:i]
+            finalresult.append(enddate)
+            return finalresult
+
+    return null        
 
 #Calculate the exposures
 def CalculateExposure(record):
@@ -211,7 +190,7 @@ class CalculationTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    #unittest.main()
+    unittest.main()
 
     #create the actual, output to stdout
     records = CreateDataFrame('test.csv')
