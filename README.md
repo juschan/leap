@@ -1,19 +1,20 @@
 # leap
 Life Experience Analysis in Python
 
-###Description
+## Description
 Actuarial life experience analysis program in Python 
 
 
-###Technology
+## Technology
 Requires Python 3.5
 
 
-###How to run
+## How to run
 In the command line:
 
     python leap.py > output.csv
 
-###Notes
+
+## Notes
 - Note the input file format: test.csv.
 - Another test data files is available: test2.csv
