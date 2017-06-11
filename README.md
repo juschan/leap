@@ -2,7 +2,7 @@
 Life Experience Analysis in Python
 
 ### Description
-Actuarial life experience analysis program in Python 
+Actuarial life experience analysis exposure calculations coded in Python.  The program calculates the exposure by lives and amounts over a policy lifetime, by tracking the age, duration and calendar years, over the period.
 
 
 ### Technology
@@ -10,11 +10,12 @@ Requires Python 3.5
 
 
 ### How to run
-In the command line:
+To run the included unit tests, type the following in the command line:
 
-    python leap.py > output.csv
+    python leap.py
 
+To run an example of the exposure calculation results based on input data, test.csv, type the following in the command line:
 
-### Notes
-- Note the input file format: test.csv.
-- Another test data files is available: test2.csv
+    python example.py
+
+The inputs and output formats are in CSV. 
