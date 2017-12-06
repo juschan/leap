@@ -17,7 +17,3 @@ To run the included unit tests, type the following in the command line:
 To run an example of the exposure calculation results based on input data, test.csv, type the following in the command line:
 
     python example.py
-
-A screenshot example is shown below, with output redirected to a separate file.
-
-![Leap Screenshot](https://github.com/juschan/leap/img/leap_screenshot.jpg)
