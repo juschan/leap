@@ -20,4 +20,4 @@ To run an example of the exposure calculation results based on input data, test.
 
 A screenshot example is shown below, with output redirected to a separate file.
 
-![Leap Screenshot](juschan.github.com/leap/img/leap_screenshot.jpg)
+![Leap Screenshot](https://github.com/juschan/leap/img/leap_screenshot.jpg)
