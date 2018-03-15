@@ -122,7 +122,7 @@ def ReadRecord(filename):
 
 #Create DataFrame using pandas
 def CreateDataFrame(filename):
-    df=pd.DataFrame.from_csv('test.csv', index_col=None)
+    df=pd.DataFrame.from_csv(filename, index_col=None)
     for row in df.itertuples():
         record=dict(zip(df.columns.values, row[1:]))
         yield record
