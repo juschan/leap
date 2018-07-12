@@ -9,11 +9,21 @@ The inputs and output formats are in CSV format.
 Requires Python 3.5
 
 
-### How to run
+### Running the unit test
 To run the included unit tests, type the following in the command line:
 
     python leap.py
 
-To run an example of the exposure calculation results based on input data, test.csv, type the following in the command line:
+
+### Running an example
+We can run an example of the exposure calculation based on input data, test.csv. This input file consists of various fields as shown below.
+
+![Contents of test.csv file](img/test_csv.png)
+
+To run the exposure calculations, type the following in the command line:
 
     python example.py
+
+We would get the results shown below.
+
+![Output from running example.py](img/example_py.png)
